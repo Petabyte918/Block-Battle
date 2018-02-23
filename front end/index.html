@@ -1,0 +1,97 @@
+<html>
+<head>
+    <title>Block Battle Beta</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <style type="text/css">
+        canvas{
+            border: 1px solid black;
+        }
+        .row {
+            margin: 0; padding: 0;
+        }
+    </style>
+</head>
+<body>
+<div class="row">
+    <div class="col-md-6">
+        <canvas width="700" height="700" ID="mycanvas" tabindex="0" >Canvas tag not supported</canvas>
+    </div>
+</div>
+
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+<script>
+
+    $(document).ready(function()
+    {
+        var socket = io('http://localhost:3000');
+        io.connect();
+        var canvas = document.getElementById("mycanvas");
+        canvas.addEventListener('keydown', doKeyDown, true);
+        canvas.addEventListener('keyup', doKeyUp, true);
+        var context = canvas.getContext("2d");
+
+        var width = 700;
+        var height = 700;
+
+        var players = {};
+
+        var bullets = {};
+
+        socket.on("connected", function(data)
+        {
+            players = data.player;
+            bullets = data.bullet;
+        });
+
+        socket.on("update",function(data)
+        {
+
+        });
+
+        function doKeyUp(e)
+        {
+            socket.emit("keyDown",{"direction":e.keyCode});
+        }
+
+        function doKeyDown(e)
+        {
+            socket.emit("keyUp",{"direction":e.keyCode});
+        }
+
+        function draw()
+        {
+            context.fillStyle = "#000000";
+            context.fillRect(0, 0, width, height);
+
+            for(var i = 0; i< bullets.length; i++)
+            {
+                if(bullets[i] != -1)
+                {
+                    context.fillStyle = "rgba(255, 0, 199, 1)"; //pink
+                    context.fillRect(bullets[i].x, bullets[i].y, 10,10);
+                }
+
+            }
+            for(var i = 0; i< players.length; i++)
+            {
+                if(players[i] != -1)
+                {
+                    context.fillStyle = "rgba(0, 45, 160, 1)"; //blue
+                    context.fillRect(players[i].x, players[i].y, 25,25);
+                }
+            }
+        }
+
+        setInterval(function ()
+        {
+            draw();
+        }, 1000/60);
+
+    });
+
+
+</script>
+
+</body>
+</html>
