@@ -5,18 +5,50 @@
  * 2-22-18
  */
 
-const app = require('express')();
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
+var app = require('express')();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
 
-const PORT = 3000;
+var PORT = 3000;
 
-var players
+var players = {};
 
-io.on('connection', function(socket)
+var blocks = [];
+
+
+var Player = function()
 {
 
 };
+
+io.on('connection', function(socket)
+{
+    var p = new Player();
+
+    console.log("user connected");
+
+    var initialState = new Object();
+    initialState.players = players;
+    initialState.blocks = blocks;
+
+    socket.emit('connected', initialState);
+
+    socket.on('move', function(data)
+    {
+
+    });
+
+    socket.on('shoot', function(data)
+    {
+
+    });
+
+    socket.on('disconnect', function()
+    {
+        console.log("user disconnected");
+    })
+
+});
 
 http.listen(PORT, function()
 {

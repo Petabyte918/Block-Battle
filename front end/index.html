@@ -36,12 +36,14 @@
 
         var players = {};
 
-        var bullets = {};
+        var blocks = {};
 
         socket.on("connected", function(data)
         {
-            players = data.player;
-            bullets = data.bullet;
+            console.log("got message connected");
+            console.log(data);
+            players = data.players;
+            blocks = data.blocks;
         });
 
         socket.on("update",function(data)
@@ -56,6 +58,7 @@
 
         function doKeyDown(e)
         {
+            console.log("key down");
             socket.emit("keyUp",{"direction":e.keyCode});
         }
 
@@ -64,12 +67,12 @@
             context.fillStyle = "#000000";
             context.fillRect(0, 0, width, height);
 
-            for(var i = 0; i< bullets.length; i++)
+            for(var i = 0; i< blocks.length; i++)
             {
                 if(bullets[i] != -1)
                 {
                     context.fillStyle = "rgba(255, 0, 199, 1)"; //pink
-                    context.fillRect(bullets[i].x, bullets[i].y, 10,10);
+                    context.fillRect(blocks[i].x, blocks[i].y, 10,10);
                 }
 
             }
